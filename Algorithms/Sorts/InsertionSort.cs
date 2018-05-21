@@ -19,7 +19,12 @@ namespace Algorithms.Sorts
 
         public override void Sort(IList<T> items)
         {
-            for (int i = 1, n = items.Count; i < n; i++)
+            Sort(items, 0, items.Count - 1);
+        }
+
+        public void Sort(IList<T> items, int leftBound, int rightBound)
+        {
+            for (int i = leftBound + 1; i <= rightBound; i++)
             {
                 var x = items[i];
                 var j = i;

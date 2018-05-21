@@ -18,5 +18,12 @@ namespace Tests.Algorithms.Sorts
             var sort = new QuickSort<Item<int>>(QuickSortKind.Recursive);
             SortTest(sort, 15, false);
         }
+
+        [Fact]
+        public void ImprovedRecursive()
+        {
+            var sort = new QuickSort<Item<int>>(QuickSortKind.ImprovedRecursive);
+            SortTest(sort, 50, false);
+        }
     }
 }

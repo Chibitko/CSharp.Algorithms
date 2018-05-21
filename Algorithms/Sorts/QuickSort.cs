@@ -7,10 +7,12 @@ namespace Algorithms.Sorts
     {
         private readonly IComparer<T> m_comparer;
         private readonly Action<IList<T>> m_sort;
+        private readonly Lazy<InsertionSort<T>> m_insertionSort;
 
         public QuickSort(QuickSortKind kind, IComparer<T> comparer)
         {
             m_comparer = comparer ?? throw new ArgumentNullException(nameof(comparer));
+            m_insertionSort = new Lazy<InsertionSort<T>>(() => new InsertionSort<T>(m_comparer));
             switch (kind)
             {
                 case QuickSortKind.NonRecursive:
@@ -18,6 +20,9 @@ namespace Algorithms.Sorts
                     break;
                 case QuickSortKind.Recursive:
                     m_sort = Recursive;
+                    break;
+                case QuickSortKind.ImprovedRecursive:
+                    m_sort = ImprovedRecursive;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind));
@@ -127,6 +132,33 @@ namespace Algorithms.Sorts
                     stack.Push((l, p));
                 }
             }
+        }
+
+        private void ImprovedRecursive(IList<T> items)
+        {
+            if (items == null)
+            {
+                throw new ArgumentNullException(nameof(items));
+            }
+            if (items.Count == 0)
+            {
+                return;
+            }
+            ImprovedRecursive(items, 0, items.Count - 1);
+        }
+
+        private void ImprovedRecursive(IList<T> items, int leftBound, int rightBound)
+        {
+            if (rightBound - leftBound <= 10)
+            {
+                m_insertionSort.Value.Sort(items, leftBound, rightBound);
+                return;
+            }
+            int mediane = items.IndexOfMediane(leftBound, (leftBound + rightBound) / 2, rightBound, m_comparer);
+            items.Swap(mediane, (leftBound + rightBound) / 2);
+            var partion = Partion(items, leftBound, rightBound);
+            ImprovedRecursive(items, leftBound, partion);
+            ImprovedRecursive(items, partion + 1, rightBound);
         }
     }
 }
