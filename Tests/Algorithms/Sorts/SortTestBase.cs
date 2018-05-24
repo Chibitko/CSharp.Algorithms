@@ -168,7 +168,7 @@ namespace Tests.Algorithms.Sorts
         /// <param name="value">Value generator.</param>
         private void SortTest(SortBase<Item<int>> sort, int maxLength, bool stable, Func<int, int> value)
         {
-            for (var length = 0; length < maxLength; length++)
+            for (var length = 10; length < maxLength; length++)
             {
                 var data = Enumerable.Range(0, length)
                     .Select(i => new Item<int>(value(i), i))
