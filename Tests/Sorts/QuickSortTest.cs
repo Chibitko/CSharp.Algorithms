@@ -1,7 +1,7 @@
 using Algorithms.Sorts;
 using Xunit;
 
-namespace Tests.Algorithms.Sorts
+namespace Tests.Sorts
 {
     public sealed class QuickSortTest : SortTestBase
     {

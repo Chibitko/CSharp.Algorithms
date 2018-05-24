@@ -57,12 +57,12 @@ namespace Algorithms.Sorts
         {
             // Build the heap in list so that largest value is at the root.
             BinaryHeap<T>.HeapifyDown(items, m_comparer);
-            // The following loop maintains the invariants that a[0:end] is a heap and every element
+            // The following loop maintains the invariants that items[0:end] is a heap and every element
             // beyond end is greater than everything before it(so a[end: count] is in sorted order.
             var end = items.Count - 1;
             while (end > 0)
             {
-                // a[0] is the root and largest value.The swap moves it in front of the sorted elements.
+                // items[0] is the root and largest value.The swap moves it in front of the sorted elements.
                 items.Swap(end, 0);
                 // The heap size is reduced by one.
                 end--;
@@ -75,16 +75,16 @@ namespace Algorithms.Sorts
         {
             // Build the heap in list so that largest value is at the root.
             BinaryHeap<T>.HeapifyUp(items, m_comparer);
-            // The following loop maintains the invariants that a[0:end] is a heap and every element
-            // beyond end is greater than everything before it(so a[end: count] is in sorted order.
+            // The following loop maintains the invariants that items[0:end] is a heap and every element
+            // beyond end is greater than everything before it(so items[end: count] is in sorted order.
             var end = items.Count - 1;
             while (end > 0)
             {
-                // a[0] is the root and largest value.The swap moves it in front of the sorted elements.
+                // items[0] is the root and largest value.The swap moves it in front of the sorted elements.
                 items.Swap(end, 0);
                 // The heap size is reduced by one.
                 end--;
-                // Tthe swap ruined the heap property, so restore it.
+                // The swap ruined the heap property, so restore it.
                 BinaryHeap<T>.SiftDown(items, 0, end, m_comparer);
             }
         }

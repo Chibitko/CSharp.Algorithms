@@ -9,7 +9,7 @@ namespace Algorithms.Sorts
 
         private static void Copy(IList<T> src, IList<T> dst)
         {
-            for (int i = 0, l = dst.Count; i < l; i++)
+            for (int i = 0, n = dst.Count; i < n; i++)
             {
                 dst[i] = src[i];
             }
@@ -56,6 +56,14 @@ namespace Algorithms.Sorts
 
         public override void Sort(IList<T> data)
         {
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+            if (data.Count == 0)
+            {
+                return;
+            }
             m_sort(data);
         }
 
@@ -88,14 +96,6 @@ namespace Algorithms.Sorts
 
         private void Recursive(IList<T> data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-            if (data.Count == 0)
-            {
-                return;
-            }
             var temp = new T[data.Count];
             var buffer = Recursive(data, temp, 0, data.Count - 1);
             if (buffer.Equals(data))
@@ -122,14 +122,6 @@ namespace Algorithms.Sorts
 
         private void CopyFirstRecursive(IList<T> data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-            if (data.Count == 0)
-            {
-                return;
-            }
             var temp = new T[data.Count];
             data.CopyTo(temp, 0);
             CopyFirstRecursive(temp, data, 0, data.Count - 1);
@@ -149,14 +141,6 @@ namespace Algorithms.Sorts
 
         private void NonRecursive(IList<T> data)
         {
-            if (data == null)
-            {
-                throw new ArgumentNullException(nameof(data));
-            }
-            if (data.Count == 0)
-            {
-                return;
-            }
             var temp = new T[data.Count];
             var buffer = NonRecursive(data, temp);
             if (buffer.Equals(data))

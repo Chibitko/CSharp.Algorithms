@@ -5,7 +5,7 @@ using System.Linq;
 using Algorithms.Sorts;
 using Xunit;
 
-namespace Tests.Algorithms.Sorts
+namespace Tests.Sorts
 {
     public abstract class SortTestBase
     {

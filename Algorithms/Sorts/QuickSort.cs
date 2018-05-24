@@ -46,6 +46,14 @@ namespace Algorithms.Sorts
 
         public override void Sort(IList<T> items)
         {
+            if (items == null)
+            {
+                throw new ArgumentNullException(nameof(items));
+            }
+            if (items.Count == 0)
+            {
+                return;
+            }
             m_sort(items);
         }
 
@@ -79,14 +87,6 @@ namespace Algorithms.Sorts
 
         private void Recursive(IList<T> items)
         {
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-            if (items.Count == 0)
-            {
-                return;
-            }
             Recursive(items, 0, items.Count - 1);
         }
 
@@ -103,14 +103,6 @@ namespace Algorithms.Sorts
 
         private void NonRecursive(IList<T> items)
         {
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-            if (items.Count == 0)
-            {
-                return;
-            }
             var stack = new Stack<(int, int)>();
             stack.Push((0, items.Count - 1));
             while (stack.Count > 0)
@@ -136,14 +128,6 @@ namespace Algorithms.Sorts
 
         private void ImprovedRecursive(IList<T> items)
         {
-            if (items == null)
-            {
-                throw new ArgumentNullException(nameof(items));
-            }
-            if (items.Count == 0)
-            {
-                return;
-            }
             ImprovedRecursive(items, 0, items.Count - 1);
         }
 

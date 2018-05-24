@@ -103,7 +103,7 @@ namespace Algorithms.Data.Heaps
                 }
                 a.Swap(root, swap);
                 root = swap;
-                // repeat to continue sifting down the child now.
+                // Repeat to continue sifting down the child now.
             }
         }
 

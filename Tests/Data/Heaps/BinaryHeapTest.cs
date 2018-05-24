@@ -2,7 +2,7 @@
 using Algorithms.Data.Heaps;
 using Xunit;
 
-namespace Tests.Algorithms.Data.Heaps
+namespace Tests.Data.Heaps
 {
     public sealed class BinaryHeapTest
     {

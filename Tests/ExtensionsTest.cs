@@ -1,8 +1,7 @@
-﻿
-using Algorithms;
+﻿using Algorithms;
 using Xunit;
 
-namespace Tests.Algorithms
+namespace Tests
 {
     public sealed class ExtensionsTest
     {
