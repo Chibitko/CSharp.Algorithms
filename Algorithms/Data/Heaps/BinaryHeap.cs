@@ -127,9 +127,9 @@ namespace Algorithms.Data.Heaps
             while (child > start)
             {
                 var parent = Parent(child);
-                if (comparer.Compare(a[parent], a[child]) >= 0)
+                if (parent < start || comparer.Compare(a[parent], a[child]) >= 0)
                 {
-                    // Parent and child are in valid order.
+                    // Parent and child are in the right order.
                     return;
                 }
                 a.Swap(parent, child);
