@@ -75,70 +75,75 @@ namespace Algorithms.Data.Heaps
         ///     Repair the heap whose root element is at index <see cref="start" />,
         ///     assuming the heaps rooted at its children are valid.
         /// </summary>
-        /// <param name="a">List of items.</param>
-        /// <param name="start">Start.</param>
-        /// <param name="end">End.</param>
-        /// <param name="comparer">Items comparer.</param>
+        /// <param name="a">List of elements.</param>
+        /// <param name="start">Root element index.</param>
+        /// <param name="end">Last element index.</param>
+        /// <param name="comparer">Element comparer.</param>
         public static void SiftDown(IList<T> a, int start, int end, IComparer<T> comparer)
         {
             var root = start;
-            while (LeftChild(root) <= end) // While the root has at least one child.
+            while (true)
             {
-                var child = LeftChild(root); // Left child of root.
-                var swap = root; // Keeps track of child to swap with.
-                if (comparer.Compare(a[swap], a[child]) < 0)
+                var leftChild = LeftChild(root); // Left child of root.
+                if (leftChild > end)
                 {
-                    swap = child;
+                    // Left child is out of range.
+                    return;
                 }
-                // If there is a right child and that child is greater.
-                if (child + 1 <= end && comparer.Compare(a[swap], a[child + 1]) < 0)
+                var min = root; // Keeps track of child to swap with.
+                if (comparer.Compare(a[min], a[leftChild]) < 0)
                 {
-                    swap = child + 1;
+                    min = leftChild;
                 }
-                if (swap == root)
+                var rightChild = leftChild + 1; // Right child of root.
+                if (rightChild <= end && comparer.Compare(a[min], a[rightChild]) < 0)
+                {
+                    // If there is a right child and that child is greater.
+                    min = rightChild;
+                }
+                if (min == root)
                 {
                     // The root holds the largest element. Since we assume the heaps rooted at the
                     // children are valid, this means that we are done.
                     return;
                 }
-                a.Swap(root, swap);
-                root = swap;
+                a.Swap(root, min);
+                root = min;
                 // Repeat to continue sifting down the child now.
             }
         }
 
         /// <summary>
         ///     Repair the heap whose root element is at index <see cref="start" />,
-        ///     assuming the heaps rooted at its children are valid.
+        ///     assuming the new element at index <see cref="end" />.
         /// </summary>
-        /// <param name="a">List of items.</param>
-        /// <param name="start">Represents the limit of how far up the heap to sift.</param>
-        /// <param name="end">The node to sift up.</param>
-        /// <param name="comparer">Items comparer.</param>
+        /// <param name="a">List of elements.</param>
+        /// <param name="start">Root element index.</param>
+        /// <param name="end">New element index.</param>
+        /// <param name="comparer">Element comparer.</param>
         public static void SiftUp(IList<T> a, int start, int end, IComparer<T> comparer)
         {
             var child = end;
             while (child > start)
             {
                 var parent = Parent(child);
-                if (comparer.Compare(a[parent], a[child]) < 0) // Out of max-heap order.
+                if (comparer.Compare(a[parent], a[child]) >= 0)
                 {
-                    a.Swap(parent, child);
-                    child = parent; // Repeat to continue sifting up the parent now.
-                }
-                else
-                {
+                    // Parent and child are in valid order.
                     return;
                 }
+                a.Swap(parent, child);
+                child = parent;
+                // Repeat to continue sifting up the parent now.
             }
         }
 
         /// <summary>
-        ///     Put elements of 'a' in heap order, in-place.
+        ///     Put elements of <see cref="a" /> in heap order, in-place.
         ///     Has O(n) time complexity.
         /// </summary>
-        /// <param name="a">List of items.</param>
-        /// <param name="comparer">Items comparer.</param>
+        /// <param name="a">List of elements.</param>
+        /// <param name="comparer">Element comparer.</param>
         public static void HeapifyDown(IList<T> a, IComparer<T> comparer)
         {
             var count = a.Count;
@@ -157,11 +162,11 @@ namespace Algorithms.Data.Heaps
         }
 
         /// <summary>
-        ///     Put elements of 'a' in heap order, in-place.
+        ///     Put elements of <see cref="a" /> in heap order, in-place.
         ///     Has O(n log n) time complexity.
         /// </summary>
-        /// <param name="a">List of items.</param>
-        /// <param name="comparer">Items comparer.</param>
+        /// <param name="a">List of elements.</param>
+        /// <param name="comparer">Element comparer.</param>
         public static void HeapifyUp(IList<T> a, IComparer<T> comparer)
         {
             var count = a.Count;
