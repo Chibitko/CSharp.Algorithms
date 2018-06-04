@@ -123,15 +123,15 @@ namespace Algorithms.Graphs
         {
             public int Compare(int? x, int? y)
             {
-                if (x == null && y == null)
+                if (x == InfinityDistance && y == InfinityDistance)
                 {
                     return 0;
                 }
-                if (x == null)
+                if (x == InfinityDistance)
                 {
                     return 1;
                 }
-                if (y == null)
+                if (y == InfinityDistance)
                 {
                     return -1;
                 }
