@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Algorithms.Data.Graphs
 {
-    public class Graph<T> : GraphBase<T>
+    public sealed class DenseGraph<T> : GraphBase<T>
     {
         private readonly T[,] m_graph;
 
@@ -11,7 +12,7 @@ namespace Algorithms.Data.Graphs
         /// </summary>
         /// <param name="vertexCount">Vertex count.</param>
         /// <exception cref="ArgumentOutOfRangeException">: vertexCount less than or equal 0.</exception>
-        public Graph(int vertexCount)
+        public DenseGraph(int vertexCount)
         {
             if (vertexCount <= 0)
             {
@@ -26,8 +27,8 @@ namespace Algorithms.Data.Graphs
         /// </summary>
         /// <param name="graph">Graph as a 2D array.</param>
         /// <exception cref="ArgumentNullException">: array is null.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">: array is empty or has a different dimension size.</exception>
-        public Graph(T[,] graph)
+        /// <exception cref="ArgumentOutOfRangeException">: array is empty or has different dimension sizes.</exception>
+        public DenseGraph(T[,] graph)
         {
             if (graph == null)
             {
@@ -47,6 +48,34 @@ namespace Algorithms.Data.Graphs
         {
             get => m_graph[from, to];
             set => m_graph[from, to] = value;
+        }
+
+        public override bool TryGetEdge(int from, int to, out T edge)
+        {
+            edge = m_graph[from, to];
+            return true;
+        }
+
+        public override IReadOnlyList<Neighbor> GetNeighbors(int vertex)
+        {
+            var result = new Neighbor[VertexCount - 1];
+            for (int i = 0; i < vertex; i++)
+            {
+                result[i] = new Neighbor
+                {
+                    Number = i,
+                    Value = m_graph[vertex, i]
+                };
+            }
+            for (int i = vertex + 1, n = VertexCount; i < n; i++)
+            {
+                result[i - 1] = new Neighbor
+                {
+                    Number = i,
+                    Value = m_graph[vertex, i]
+                };
+            }
+            return result;
         }
     }
 }

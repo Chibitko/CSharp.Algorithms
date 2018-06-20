@@ -2,21 +2,20 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Algorithms.Data.Graphs;
+using Algorithms.Data.Heaps;
 
 namespace Algorithms.Graphs
 {
     public sealed class Dijkstra
     {
-        public static readonly int? InfinityDistance = null;
+        public static readonly int? INF = null;
 
-        private readonly Graph<int?> m_weights;
-        private readonly int m_vertexCount;
+        private readonly GraphBase<int?> m_weights;
         private readonly DistanceComparer m_distanceComparer;
 
-        public Dijkstra(Graph<int?> weights)
+        public Dijkstra(GraphBase<int?> weights)
         {
             m_weights = weights ?? throw new ArgumentNullException(nameof(weights));
-            m_vertexCount = m_weights.VertexCount;
             m_distanceComparer = new DistanceComparer();
         }
 
@@ -28,23 +27,30 @@ namespace Algorithms.Graphs
         /// <exception cref="ArgumentOutOfRangeException">: source less than 0 or greater than or equal the graph vertext count.</exception>
         public IReadOnlyList<Vertex> GetResult(int source)
         {
-            if (source < 0 || source >= m_vertexCount)
+            var n = m_weights.VertexCount;
+
+            if (source < 0 || source >= n)
             {
                 throw new ArgumentOutOfRangeException(nameof(source));
             }
 
             // Distances and paths.
-            var result = new Vertex[m_vertexCount];
+            var result = new Vertex[n];
 
             // Visited vertexes.
-            var visitedVertexes = new bool[m_vertexCount];
+            var visitedVertexes = new bool[n];
 
-            // Returns a vertex with a min distance from the source vertex to it.
-            int GetNotVisitedMinDistanceVertex()
+            // Binary heap to search vertex with min distance.
+            var binaryHeap = m_weights is SparseGraph<int?>
+                ? new BinaryHeap<(int v, int? d)>(new BinaryHeapComparer())
+                : null;
+
+            // Returns from the intermediate result a vertex with a min distance from the source vertex to it.
+            int GetMinFromIntermediateResult()
             {
                 var minIndex = -1;
-                var minDistance = InfinityDistance;
-                for (int i = 0, n = result.Length; i < n; i++)
+                var minDistance = INF;
+                for (int i = 0; i < n; i++)
                 {
                     if (!visitedVertexes[i]
                         && (minIndex == -1 || m_distanceComparer.Compare(minDistance, result[i].Distance) > 0))
@@ -56,8 +62,20 @@ namespace Algorithms.Graphs
                 return minIndex;
             }
 
+            // Returns from the binary heap a vertex with a min distance from the source vertex to it.
+            int GetMinFromBinaryHeap()
+            {
+                return binaryHeap.Count == 0
+                    ? -1
+                    : binaryHeap.Pop().v;
+            }
+
+            var getMin = binaryHeap == null
+                ? GetMinFromIntermediateResult
+                : (Func<int>) GetMinFromBinaryHeap;
+
             // Initialization.
-            for (int i = 0; i < m_vertexCount; i++)
+            for (int i = 0; i < n; i++)
             {
                 if (i == source)
                 {
@@ -67,14 +85,16 @@ namespace Algorithms.Graphs
                 else
                 {
                     // The distance from the source vertex to each other vertex is infinity.
-                    result[i] = new Vertex(InfinityDistance);
+                    result[i] = new Vertex(INF);
                 }
             }
+
+            binaryHeap?.Push((source, 0));
 
             while (true)
             {
                 // 'min' is not-visited vertex with a shortest distance from the source vertex.
-                var min = GetNotVisitedMinDistanceVertex();
+                var min = getMin();
                 if (min == -1)
                 {
                     // If not found work is done.
@@ -84,32 +104,29 @@ namespace Algorithms.Graphs
                 // Mark 'min' as visited.
                 visitedVertexes[min] = true;
 
-                for (var neighbor = 0; neighbor < m_vertexCount; neighbor++)
+                foreach (var neighbor in m_weights.GetNeighbors(min))
                 {
-                    if (neighbor == min)
-                    {
-                        // Itself.
-                        continue;
-                    }
-
-                    if (visitedVertexes[neighbor])
+                    if (visitedVertexes[neighbor.Number])
                     {
                         // Neighbor is visited.
                         continue;
                     }
 
-                    if (m_weights[min, neighbor] == InfinityDistance)
+                    if (neighbor.Value == INF)
                     {
-                        // Not neighbor, the vertexes are not connected.
+                        // Vertexes are not connected.
                         continue;
                     }
 
                     // Alternate distance from the source vertex to the neighbor of 'min'.
-                    var altDistance = result[min].Distance + m_weights[min, neighbor];
-                    if (m_distanceComparer.Compare(result[neighbor].Distance, altDistance) > 0)
+                    var altDistance = result[min].Distance + neighbor.Value;
+
+                    // Changing distance to the neighbor if a shorter path found.
+                    if (m_distanceComparer.Compare(result[neighbor.Number].Distance, altDistance) > 0)
                     {
-                        result[neighbor].Distance = altDistance;
-                        result[neighbor].Previous = min;
+                        result[neighbor.Number].Distance = altDistance;
+                        result[neighbor.Number].Previous = min;
+                        binaryHeap?.Push((neighbor.Number, altDistance));
                     }
                 }
             }
@@ -118,26 +135,6 @@ namespace Algorithms.Graphs
         }
 
         #region Internal types
-
-        private sealed class DistanceComparer : IComparer<int?>
-        {
-            public int Compare(int? x, int? y)
-            {
-                if (x == InfinityDistance && y == InfinityDistance)
-                {
-                    return 0;
-                }
-                if (x == InfinityDistance)
-                {
-                    return 1;
-                }
-                if (y == InfinityDistance)
-                {
-                    return -1;
-                }
-                return Comparer<int>.Default.Compare(x.Value, y.Value);
-            }
-        }
 
         [DebuggerDisplay("{Distance} ({Previous})")]
         public struct Vertex
@@ -151,6 +148,45 @@ namespace Algorithms.Graphs
             public int? Distance { get; internal set; }
 
             public int? Previous { get; internal set; }
+        }
+
+        private sealed class DistanceComparer : IComparer<int?>
+        {
+            public int Compare(int? x, int? y)
+            {
+                if (x == INF && y == INF)
+                {
+                    return 0;
+                }
+                if (x == INF)
+                {
+                    return 1;
+                }
+                if (y == INF)
+                {
+                    return -1;
+                }
+                return Comparer<int>.Default.Compare(x.Value, y.Value);
+            }
+        }
+
+        private sealed class BinaryHeapComparer : IComparer<(int v, int? d)>
+        {
+            private readonly DistanceComparer m_distanceComparer = new DistanceComparer();
+
+            public int Compare((int v, int? d) x, (int v, int? d) y)
+            {
+                var result = m_distanceComparer.Compare(x.d.Value, y.d.Value);
+                if (result < 0)
+                {
+                    return 1;
+                }
+                if (result > 0)
+                {
+                    return -1;
+                }
+                return 0;
+            }
         }
 
         #endregion
