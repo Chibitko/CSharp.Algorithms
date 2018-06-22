@@ -35,7 +35,7 @@ namespace Algorithms.Data.Graphs
         /// </summary>
         /// <param name="vertex">Vertex.</param>
         /// <returns>Vertex neighbors.</returns>
-        public abstract IReadOnlyList<Neighbor> GetNeighbors(int vertex);
+        public abstract IEnumerable<Neighbor> GetNeighbors(int vertex);
 
         #region Internal types
 

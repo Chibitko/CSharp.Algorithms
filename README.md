@@ -8,3 +8,4 @@
 
 #### Graphs:
   * [Dijkstra's algorithm](Algorithms/Graphs/Dijkstra.cs)
+  * [Floyd-Warshall algorithm](Algorithms/Graphs/FloydWarshall.cs)

@@ -19,8 +19,8 @@ namespace Tests.Graphs
                 { null, null, null, 0006, 0000, 0009 },
                 { 0014, null, 0002, null, 0009, 0000 },
             });
-            var dijkstrasAlgorithm = new Dijkstra(weights);
-            var distances = dijkstrasAlgorithm.GetResult(0);
+            var dijkstra = new Dijkstra(weights);
+            var distances = dijkstra.GetResult(0);
             Assert.Equal(distances, new List<Dijkstra.Vertex>
             {
                 new Dijkstra.Vertex(0),
@@ -56,8 +56,8 @@ namespace Tests.Graphs
                 [5, 2] = 2,
                 [5, 4] = 9
             };
-            var dijkstrasAlgorithm = new Dijkstra(weights);
-            var distances = dijkstrasAlgorithm.GetResult(0);
+            var dijkstra = new Dijkstra(weights);
+            var distances = dijkstra.GetResult(0);
             Assert.Equal(distances, new List<Dijkstra.Vertex>
             {
                 new Dijkstra.Vertex(0),

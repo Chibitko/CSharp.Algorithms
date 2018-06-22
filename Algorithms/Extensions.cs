@@ -42,5 +42,13 @@ namespace Algorithms
             items[index1] = items[index2];
             items[index2] = tmp;
         }
+
+        public static IEnumerable<T> SliceRow<T>(this T[,] array, int row)
+        {
+            for (int i = 0, n = array.GetLength(0); i < n; i++)
+            {
+                yield return array[row, i];
+            }
+        }
     }
 }

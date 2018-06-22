@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Algorithms.Data.Graphs;
 using Algorithms.Data.Heaps;
 
@@ -11,12 +12,12 @@ namespace Algorithms.Graphs
         public static readonly int? INF = null;
 
         private readonly GraphBase<int?> m_weights;
-        private readonly DistanceComparer m_distanceComparer;
+        private readonly DistanceComparer m_cmp;
 
         public Dijkstra(GraphBase<int?> weights)
         {
             m_weights = weights ?? throw new ArgumentNullException(nameof(weights));
-            m_distanceComparer = new DistanceComparer();
+            m_cmp = new DistanceComparer();
         }
 
         /// <summary>
@@ -50,10 +51,10 @@ namespace Algorithms.Graphs
             {
                 var minIndex = -1;
                 var minDistance = INF;
-                for (int i = 0; i < n; i++)
+                for (var i = 0; i < n; i++)
                 {
                     if (!visitedVertexes[i]
-                        && (minIndex == -1 || m_distanceComparer.Compare(minDistance, result[i].Distance) > 0))
+                        && (minIndex == -1 || m_cmp.Compare(minDistance, result[i].Distance) > 0))
                     {
                         minIndex = i;
                         minDistance = result[i].Distance;
@@ -75,7 +76,7 @@ namespace Algorithms.Graphs
                 : (Func<int>) GetMinFromBinaryHeap;
 
             // Initialization.
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
             {
                 if (i == source)
                 {
@@ -122,7 +123,7 @@ namespace Algorithms.Graphs
                     var altDistance = result[min].Distance + neighbor.Value;
 
                     // Changing distance to the neighbor if a shorter path found.
-                    if (m_distanceComparer.Compare(result[neighbor.Number].Distance, altDistance) > 0)
+                    if (m_cmp.Compare(result[neighbor.Number].Distance, altDistance) > 0)
                     {
                         result[neighbor.Number].Distance = altDistance;
                         result[neighbor.Number].Previous = min;
@@ -131,6 +132,23 @@ namespace Algorithms.Graphs
                 }
             }
 
+            return result;
+        }
+
+        public IReadOnlyList<int> GetPath(IReadOnlyList<Vertex> vertexes, int i, int j)
+        {
+            var result = new List<int>();
+            if (i == j)
+            {
+                return result;
+            }
+            var c = j;
+            result.Add(c);
+            while (vertexes[c].Previous != null)
+            {
+                result.Insert(0, (int) vertexes[c].Previous);
+                c = (int) vertexes[c].Previous;
+            }
             return result;
         }
 
@@ -148,26 +166,6 @@ namespace Algorithms.Graphs
             public int? Distance { get; internal set; }
 
             public int? Previous { get; internal set; }
-        }
-
-        private sealed class DistanceComparer : IComparer<int?>
-        {
-            public int Compare(int? x, int? y)
-            {
-                if (x == INF && y == INF)
-                {
-                    return 0;
-                }
-                if (x == INF)
-                {
-                    return 1;
-                }
-                if (y == INF)
-                {
-                    return -1;
-                }
-                return Comparer<int>.Default.Compare(x.Value, y.Value);
-            }
         }
 
         private sealed class BinaryHeapComparer : IComparer<(int v, int? d)>

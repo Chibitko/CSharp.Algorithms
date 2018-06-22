@@ -74,7 +74,7 @@ namespace Algorithms.Data.Graphs
             return false;
         }
 
-        public override IReadOnlyList<Neighbor> GetNeighbors(int vertex)
+        public override IEnumerable<Neighbor> GetNeighbors(int vertex)
         {
             return m_graph[vertex];
         }

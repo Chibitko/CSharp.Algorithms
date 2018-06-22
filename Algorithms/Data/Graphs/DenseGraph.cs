@@ -56,26 +56,20 @@ namespace Algorithms.Data.Graphs
             return true;
         }
 
-        public override IReadOnlyList<Neighbor> GetNeighbors(int vertex)
+        public override IEnumerable<Neighbor> GetNeighbors(int vertex)
         {
-            var result = new Neighbor[VertexCount - 1];
-            for (int i = 0; i < vertex; i++)
+            for (int i = 0, n = VertexCount; i < n; i++)
             {
-                result[i] = new Neighbor
+                if (i == vertex)
+                {
+                    continue;
+                }
+                yield return new Neighbor
                 {
                     Number = i,
                     Value = m_graph[vertex, i]
                 };
             }
-            for (int i = vertex + 1, n = VertexCount; i < n; i++)
-            {
-                result[i - 1] = new Neighbor
-                {
-                    Number = i,
-                    Value = m_graph[vertex, i]
-                };
-            }
-            return result;
         }
     }
 }
