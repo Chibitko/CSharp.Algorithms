@@ -26,7 +26,7 @@ namespace Tests.Graphs
             for (var i = 0; i < weights.VertexCount; i++)
             {
                 var dijkstraResult = dijkstra.GetResult(i);
-                Assert.Equal(floydWarshallResult.distance.SliceRow(i), dijkstraResult.Select(x => x.Distance).ToArray());
+                Assert.Equal(floydWarshallResult.distance.SliceRow(i), dijkstraResult.Select(x => x.Distance));
                 for (var j = 0; j < weights.VertexCount; j++)
                 {
                     Assert.Equal(floydWarshall.GetPath(floydWarshallResult.next, i, j), dijkstra.GetPath(dijkstraResult, i, j));

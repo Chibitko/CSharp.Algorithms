@@ -34,10 +34,6 @@ namespace Algorithms.Graphs
                 for (int j = 0; j < n; j++)
                 {
                     d[i, j] = m_weights[i, j];
-                    if (i != j)
-                    {
-                        d[i, j] = m_weights[i, j];
-                    }
                     next[i, j] = j;
                 }
             }

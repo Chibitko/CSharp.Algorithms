@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Algorithms.Data.Graphs;
 using Algorithms.Data.Heaps;
 
@@ -107,15 +106,15 @@ namespace Algorithms.Graphs
 
                 foreach (var neighbor in m_weights.GetNeighbors(min))
                 {
-                    if (visitedVertexes[neighbor.Number])
-                    {
-                        // Neighbor is visited.
-                        continue;
-                    }
-
                     if (neighbor.Value == INF)
                     {
                         // Vertexes are not connected.
+                        continue;
+                    }
+
+                    if (visitedVertexes[neighbor.Number])
+                    {
+                        // Neighbor is visited.
                         continue;
                     }
 
@@ -170,11 +169,11 @@ namespace Algorithms.Graphs
 
         private sealed class BinaryHeapComparer : IComparer<(int v, int? d)>
         {
-            private readonly DistanceComparer m_distanceComparer = new DistanceComparer();
+            private readonly DistanceComparer m_cmp = new DistanceComparer();
 
             public int Compare((int v, int? d) x, (int v, int? d) y)
             {
-                var result = m_distanceComparer.Compare(x.d.Value, y.d.Value);
+                var result = m_cmp.Compare(x.d.Value, y.d.Value);
                 if (result < 0)
                 {
                     return 1;
