@@ -5,9 +5,9 @@ namespace Algorithms.Sorts
 {
     public class QuickSort<T> : SortBase<T>
     {
-        private readonly IComparer<T> m_comparer;
         private readonly Action<IList<T>> m_sort;
-        private readonly Lazy<InsertionSort<T>> m_insertionSort;
+        protected readonly IComparer<T> m_comparer;
+        protected readonly Lazy<InsertionSort<T>> m_insertionSort;
 
         public QuickSort(QuickSortKind kind, IComparer<T> comparer)
         {
@@ -44,6 +44,8 @@ namespace Algorithms.Sorts
         {
         }
 
+        protected InsertionSort<T> InsertionSort => m_insertionSort.Value;
+
         public override void Sort(IList<T> items)
         {
             if (items == null)
@@ -57,7 +59,7 @@ namespace Algorithms.Sorts
             m_sort(items);
         }
 
-        private int Partion(IList<T> items, int leftBound, int rightBound)
+        protected int Partion(IList<T> items, int leftBound, int rightBound)
         {
             var left = leftBound;
             var right = rightBound;
@@ -135,7 +137,7 @@ namespace Algorithms.Sorts
         {
             if (rightBound - leftBound <= 10)
             {
-                m_insertionSort.Value.Sort(items, leftBound, rightBound);
+                InsertionSort.Sort(items, leftBound, rightBound);
                 return;
             }
             int mediane = items.IndexOfMediane(leftBound, (leftBound + rightBound) / 2, rightBound, m_comparer);

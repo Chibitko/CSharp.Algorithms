@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Algorithms.Sorts
 {
-    public class InsertionSort<T> : SortBase<T>
+    public sealed class InsertionSort<T> : SortBase<T>
     {
         private readonly IComparer<T> m_comparer;
 

@@ -4,7 +4,7 @@ using Algorithms.Data.Heaps;
 
 namespace Algorithms.Sorts
 {
-    public class HeapSort<T> : SortBase<T>
+    public sealed class HeapSort<T> : SortBase<T>
     {
         private readonly IComparer<T> m_comparer;
         private readonly Action<IList<T>> m_sort;
