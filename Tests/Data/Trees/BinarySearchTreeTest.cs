@@ -9,17 +9,17 @@ namespace Tests.Data.Trees
         [Fact]
         public void BreadthFirstSearch()
         {
-            var root = new BinarySearchTree<int, int>(100, 100)
+            var root = new BinarySearchTreeNode<int, int>(100, 100)
             {
-                Left = new BinarySearchTree<int, int>(50, 50)
+                Left = new BinarySearchTreeNode<int, int>(50, 50)
                 {
-                    Left = new BinarySearchTree<int, int>(25, 25),
-                    Right = new BinarySearchTree<int, int>(75, 75)
+                    Left = new BinarySearchTreeNode<int, int>(25, 25),
+                    Right = new BinarySearchTreeNode<int, int>(75, 75)
                 },
-                Right = new BinarySearchTree<int, int>(150, 150)
+                Right = new BinarySearchTreeNode<int, int>(150, 150)
                 {
-                    Left = new BinarySearchTree<int, int>(125, 125),
-                    Right = new BinarySearchTree<int, int>(175, 175)
+                    Left = new BinarySearchTreeNode<int, int>(125, 125),
+                    Right = new BinarySearchTreeNode<int, int>(175, 175)
                 }
             };
 
@@ -29,7 +29,7 @@ namespace Tests.Data.Trees
         [Fact]
         public void Find()
         {
-            var root = new BinarySearchTreeRoot<int, int>();
+            var root = new BinarySearchTree<int, int>();
             Assert.True(root.Find(1000) == null);
             root.Add(100, 100);
             Assert.True(root.Find(100) != null);
@@ -50,7 +50,7 @@ namespace Tests.Data.Trees
         [Fact]
         public void Add()
         {
-            var root = new BinarySearchTreeRoot<int, int>();
+            var root = new BinarySearchTree<int, int>();
             Assert.True(root.Add(100, 100));
             Assert.Equal("100", GetKeysAsCommaSeparatedString(root));
             Assert.True(root.Add(150, 150));
@@ -71,7 +71,7 @@ namespace Tests.Data.Trees
         [Fact]
         public void Remove()
         {
-            var root = new BinarySearchTreeRoot<int, int>();
+            var root = new BinarySearchTree<int, int>();
             root.Add(100, 100);
             root.Add(150, 150);
             root.Add(50, 50);
@@ -99,7 +99,7 @@ namespace Tests.Data.Trees
             Assert.Equal("125,50,150,15,75,145,175,5,190", GetKeysAsCommaSeparatedString(root));
         }
 
-        private static string GetKeysAsCommaSeparatedString(BinarySearchTreeRoot<int, int> root)
+        private static string GetKeysAsCommaSeparatedString(BinarySearchTree<int, int> root)
         {
             var bfs = new StringBuilder();
             root.BreadthFirstSearch(node =>
@@ -114,7 +114,7 @@ namespace Tests.Data.Trees
             return bfs.ToString();
         }
 
-        private static string GetKeysAsCommaSeparatedString(BinarySearchTree<int, int> root)
+        private static string GetKeysAsCommaSeparatedString(BinarySearchTreeNode<int, int> root)
         {
             var bfs = new StringBuilder();
             root.BreadthFirstSearch(node =>
